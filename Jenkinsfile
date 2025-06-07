@@ -12,12 +12,13 @@ pipeline {
             }
         }
 
-        stage('Build') {
-            steps {
-                sh 'mvn clean package'
-                sh 'ls -l target/'  // Check WAR is created
-            }
-        }
+       stage('Build') {
+    steps {
+        sh 'mvn clean package'
+        sh 'pwd'              // Prints the current directory where Maven runs
+        sh 'ls -l target/'    // Lists files in the target directory (where WAR should be)
+    }
+}
 
         stage('Archive') {
             steps {
