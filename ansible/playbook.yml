@@ -1,11 +1,13 @@
 ---
 - name: Deploy to Tomcat
-  hosts: web
+  hosts: localhost
   become: yes
+  vars:
+    war_file: "{{ war_path }}"
   tasks:
     - name: Copy WAR file to Tomcat
       copy:
-        src: "/var/snap/jenkins/4865/workspace/MavenAnsible-CICD/target/MavenAnsibleWebApp.war"
+        src: "{{ war_file }}"
         dest: "/opt/tomcat/webapps/MavenAnsibleWebApp.war"
         remote_src: no
 
@@ -13,4 +15,4 @@
       systemd:
         name: tomcat
         state: restarted
-        
+
