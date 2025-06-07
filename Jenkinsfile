@@ -27,10 +27,12 @@ pipeline {
         }
         
         stage('Deploy') {
-            steps {
-                // Run ansible playbook assuming ansible-playbook is installed and configured
-                sh 'ansible-playbook ansible/playbook.yml -i ansible/hosts.ini'
-            }
-        }
+    steps {
+        sh 'pwd'
+        sh 'ls -l ansible/'
+        sh 'ansible-playbook ansible/playbook.yml -i ansible/hosts.ini'
+    }
+}
+
     }
 }
