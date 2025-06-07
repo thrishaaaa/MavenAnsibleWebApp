@@ -1,7 +1,6 @@
 pipeline {
-    agent any  // Use any available agent
+    agent any
     
-
     tools {
         maven 'maven'  // Ensure this matches the name configured in Jenkins
     }
@@ -14,24 +13,21 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh 'mvn clean package'  // Run Maven build
+                sh 'mvn clean package'
             }
         }
 
-     stage('Archive') {
+        stage('Archive') {
             steps {
-                archiveArtifacts artifacts: 'target/*.war', fingerprint:true
+                archiveArtifacts artifacts: 'target/*.war', fingerprint: true
             }
         }
+
         stage('Deploy') {
             steps {
-               sh 'mvn clean package'  
-               sh 'sh 'ansible-playbook ansible/playbook.yml -i ansible/hosts.ini'
-'
+                sh 'mvn clean package'
+                sh 'ansible-playbook ansible/playbook.yml -i ansible/hosts.ini'
             }
         }
-
-                  
     }
-
-   }
+}
