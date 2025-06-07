@@ -1,8 +1,12 @@
 pipeline {
     agent any
-    
+
     tools {
-        maven 'maven'  // Ensure this matches the Maven tool name in Jenkins config
+        maven 'maven' // Use the name configured in Jenkins Global Tool Configuration
+    }
+
+    environment {
+        WAR_PATH = "${env.WORKSPACE}/target/MavenAnsibleWebApp.war"
     }
 
     stages {
@@ -12,27 +16,28 @@ pipeline {
             }
         }
 
-       stage('Build') {
-    steps {
-        sh 'mvn clean package'
-        sh 'pwd'              // Prints the current directory where Maven runs
-        sh 'ls -l target/'    // Lists files in the target directory (where WAR should be)
-    }
-}
+        stage('Build') {
+            steps {
+                sh 'mvn clean package'
+                sh 'ls -l target/'
+            }
+        }
 
         stage('Archive') {
             steps {
                 archiveArtifacts artifacts: 'target/*.war', fingerprint: true
             }
         }
-        
-        stage('Deploy') {
-    steps {
-        sh 'pwd'
-        sh 'ls -l ansible/'
-        sh 'ansible-playbook ansible/playbook.yml -i ansible/hosts.ini'
-    }
-}
 
+        stage('Deploy') {
+            steps {
+                sh """
+                    echo "Deploying WAR: $WAR_PATH"
+                    ansible-playbook ansible/playbook.yml \
+                        -i ansible/hosts.ini \
+                        --extra-vars "war_path=$WAR_PATH"
+                """
+            }
+        }
     }
 }
